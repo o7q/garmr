@@ -70,5 +70,5 @@ private:
     int m_max_frames = 0;
     int m_time_padding_start = 0;
 
-    int m_keep_buffer = 0;
+    unsigned int m_keep_buffer = 0;
 };
