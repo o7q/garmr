@@ -26,7 +26,7 @@ void Camera::poll()
     m_motion_detector->poll(m_frame);
     // m_person_detector->poll(m_frame);
 
-    // cv::imshow("Camera", m_frame);
-    // cv::imshow("Camera Motion", m_motion_detector->getFrame());
+    cv::imshow("Camera", m_frame);
+    cv::imshow("Camera Motion", m_motion_detector->getFrame());
     // cv::imshow("Camera Motion", m_person_detector->getFrame());
 }

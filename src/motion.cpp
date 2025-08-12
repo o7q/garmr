@@ -1,8 +1,8 @@
 #include "motion.hpp"
 
-MotionDetector::MotionDetector(unsigned int frame_width, unsigned int frame_height) : m_replayBuf(frame_width, frame_height, 15, 120, 5)
+MotionDetector::MotionDetector(unsigned int frame_width, unsigned int frame_height) : m_replayBuf(frame_width, frame_height, 20, 3)
 {
-    m_bgSubtractor = cv::createBackgroundSubtractorMOG2(2048, 16.0, true);
+    m_bgSubtractor = cv::createBackgroundSubtractorMOG2(500, 16.0, false);
 }
 
 void MotionDetector::poll(const cv::Mat &frame)
@@ -25,11 +25,11 @@ void MotionDetector::poll(const cv::Mat &frame)
 
             m_motion_timer = 100.0f;
             m_motion_happening = true;
-            m_replayBuf.enable();
+            m_replayBuf.setEnabled("replays");
         }
     }
 
-    m_replayBuf.push(frame);
+    m_replayBuf.update(frame);
 
     if (m_motion_timer < 1.0f)
     {
@@ -44,7 +44,6 @@ void MotionDetector::poll(const cv::Mat &frame)
     if (m_motion_timer < 1.0f && m_motion_happening)
     {
         std::cout << "motion stopped" << std::endl;
-        m_replayBuf.save("replays/motion_" + getFormattedTime() + ".mp4");
         m_replayBuf.disable();
     }
 
