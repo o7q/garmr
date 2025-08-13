@@ -1,16 +1,18 @@
 #include "motion.hpp"
 
-MotionDetector::MotionDetector(unsigned int frame_width, unsigned int frame_height) : m_replayBuf(frame_width, frame_height, 20, 3)
+MotionDetector::MotionDetector(unsigned int frame_width, unsigned int frame_height) : m_replayBuf(frame_width, frame_height, 3)
 {
     m_bgSubtractor = cv::createBackgroundSubtractorMOG2(500, 16.0, false);
 }
 
-void MotionDetector::poll(const cv::Mat &frame)
+void MotionDetector::poll(const cv::Mat &frame, float steady_fps)
 {
+    m_replayBuf.setFramerate(steady_fps);
+
     m_bgSubtractor->apply(frame, m_fgMask);
 
-    cv::erode(m_fgMask, m_fgMask, cv::Mat(), cv::Point(-1, -1), 2);
-    cv::dilate(m_fgMask, m_fgMask, cv::Mat(), cv::Point(-1, -1), 2);
+    cv::erode(m_fgMask, m_fgMask, cv::Mat(), cv::Point(-1, -1), 4);
+    cv::dilate(m_fgMask, m_fgMask, cv::Mat(), cv::Point(-1, -1), 4);
 
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(m_fgMask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
@@ -43,7 +45,7 @@ void MotionDetector::poll(const cv::Mat &frame)
 
     if (m_motion_timer < 1.0f && m_motion_happening)
     {
-        std::cout << "motion stopped" << std::endl;
+        std::cout << "Motion Stopped" << std::endl;
         m_replayBuf.disable();
     }
 

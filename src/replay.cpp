@@ -4,11 +4,9 @@
 
 ReplayBuf::ReplayBuf(unsigned int width,
                      unsigned int height,
-                     unsigned int framerate,
                      unsigned int start_padding_time)
 {
     m_frame_size = cv::Size(width, height);
-    m_framerate = framerate;
     m_start_padding_time = start_padding_time;
 }
 

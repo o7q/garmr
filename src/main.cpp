@@ -10,17 +10,19 @@
 
 int main()
 {
-    Camera camera(0);
-
-    bool active = true;
-
-    while (active)
     {
-        camera.poll();
+        Camera camera("/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_D99D197F-video-index0");
 
-        if (cv::waitKey(1) == 27)
+        bool active = true;
+
+        while (active)
         {
-            active = false;
+            camera.poll();
+
+            if (cv::waitKey(1) == 27)
+            {
+                active = false;
+            }
         }
     }
 

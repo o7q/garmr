@@ -10,7 +10,7 @@ public:
     MotionDetector(unsigned int frame_width, unsigned int frame_height);
     ~MotionDetector() {}
 
-    void poll(const cv::Mat &frame);
+    void poll(const cv::Mat &framem, float steady_fps);
     const cv::Mat &getFrame() { return m_fgMask; }
 
 private:

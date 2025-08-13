@@ -8,10 +8,17 @@ class ReplayBuf
 public:
     ReplayBuf(unsigned int width,
               unsigned int height,
-              unsigned int framerate,
               unsigned int start_padding_time);
 
     ~ReplayBuf();
+
+    void setFramerate(float framerate)
+    {
+        if (!m_write_active)
+        {
+            m_framerate = framerate;
+        }
+    }
 
     void update(const cv::Mat &frame);
 
@@ -25,7 +32,8 @@ private:
     bool m_write_active = false;
     bool m_do_padding_write = false;
 
+    float m_framerate = 1.0f;
+
     cv::Size m_frame_size;
-    unsigned int m_framerate = 0;
     unsigned int m_start_padding_time = 0;
 };

@@ -10,7 +10,7 @@ class PersonDetector
 public:
     PersonDetector()
     {
-        hog.setSVMDetector(cv::HOGDescriptor::getDefaultPeopleDetector());
+        m_hog.setSVMDetector(cv::HOGDescriptor::getDefaultPeopleDetector());
     }
     ~PersonDetector() {}
 
@@ -19,7 +19,7 @@ public:
         m_frame = frame.clone();
 
         std::vector<cv::Rect> detections;
-        hog.detectMultiScale(m_frame, detections);
+        m_hog.detectMultiScale(m_frame, detections);
 
         for (auto &rect : detections)
         {
@@ -29,7 +29,7 @@ public:
     const cv::Mat &getFrame() { return m_frame; }
 
 private:
-    cv::HOGDescriptor hog;
+    cv::HOGDescriptor m_hog;
     cv::Mat m_frame;
 
     float m_motion_timer = 0.0f;
