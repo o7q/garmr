@@ -2,8 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "replay.hpp"
-#include "time.hpp"
+#include "../time.hpp"
 
 class PersonDetector
 {
@@ -34,6 +33,4 @@ private:
 
     float m_motion_timer = 0.0f;
     bool m_motion_happening = false;
-
-    // ReplayBuf m_replayBuf;
 };

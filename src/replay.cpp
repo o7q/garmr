@@ -2,18 +2,6 @@
 
 #include "time.hpp"
 
-ReplayBuf::ReplayBuf(unsigned int width,
-                     unsigned int height,
-                     unsigned int start_padding_time)
-{
-    m_frame_size = cv::Size(width, height);
-    m_start_padding_time = start_padding_time;
-}
-
-ReplayBuf::~ReplayBuf()
-{
-}
-
 void ReplayBuf::update(const cv::Mat &frame)
 {
     m_start_padding_buffer.push_back(frame.clone());

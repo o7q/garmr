@@ -6,11 +6,15 @@
 class ReplayBuf
 {
 public:
-    ReplayBuf(unsigned int width,
-              unsigned int height,
-              unsigned int start_padding_time);
+    ReplayBuf(const ReplayBuf &other) = delete;
+    ReplayBuf &operator=(const ReplayBuf &other) = delete;
+    ReplayBuf(int width, int height)
+    {
+        m_frame_size.width = width;
+        m_frame_size.height = height;
+    }
 
-    ~ReplayBuf();
+    ~ReplayBuf() { disable(); }
 
     void setFramerate(float framerate)
     {
@@ -18,6 +22,11 @@ public:
         {
             m_framerate = framerate;
         }
+    }
+
+    void setStartPaddingTime(int padding)
+    {
+        m_start_padding_time = padding;
     }
 
     void update(const cv::Mat &frame);
@@ -32,8 +41,8 @@ private:
     bool m_write_active = false;
     bool m_do_padding_write = false;
 
-    float m_framerate = 1.0f;
-
     cv::Size m_frame_size;
-    unsigned int m_start_padding_time = 0;
+    int m_start_padding_time = 3;
+
+    float m_framerate = 1.0f;
 };

@@ -17,7 +17,7 @@ int main()
 
         while (active)
         {
-            camera.poll();
+            camera.update();
 
             if (cv::waitKey(1) == 27)
             {
