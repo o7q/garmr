@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <opencv2/opencv.hpp>
 
 #include "detector.hpp"
@@ -14,5 +16,7 @@ public:
 
 private:
     cv::Ptr<cv::BackgroundSubtractor> m_bgSubtractor;
+    std::vector<std::vector<cv::Point>> m_contours_prealloc;
+    cv::Mat m_kernel;
     cv::Mat m_fgMask;
 };

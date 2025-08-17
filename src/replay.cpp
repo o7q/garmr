@@ -27,7 +27,7 @@ void ReplayBuf::update(const cv::Mat &frame)
     }
 }
 
-void ReplayBuf::setEnabled()
+void ReplayBuf::enable()
 {
     if (m_write_active)
     {

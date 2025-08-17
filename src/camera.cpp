@@ -40,6 +40,14 @@ void Camera::update()
     update_steady_fps(clock_start, clock_end);
 }
 
+void Camera::reset()
+{
+    m_cap.release();
+    m_cap = cv::VideoCapture(m_cap_id);
+
+    m_motion_module.init(m_cap);
+}
+
 void Camera::update_steady_fps(std::chrono::steady_clock::time_point start, std::chrono::steady_clock::time_point end)
 {
     const float frame_seconds = std::chrono::duration_cast<std::chrono::duration<float>>(end - start).count();

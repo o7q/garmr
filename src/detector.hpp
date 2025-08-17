@@ -14,8 +14,8 @@ public:
 public:
     Detector(const Detector &other) = delete;
     Detector &operator=(const Detector &other) = delete;
-    Detector() {}
-    virtual ~Detector() {}
+    Detector() = default;
+    virtual ~Detector() = default;
 
     virtual Result check(const cv::Mat &frame) { return Result(); }
 

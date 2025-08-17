@@ -2,7 +2,6 @@
 
 #include <string>
 #include <chrono>
-#include <vector>
 
 #include "camera_module.hpp"
 #include "motion.hpp"
@@ -14,20 +13,15 @@ private:
     inline static constexpr int MAX_MISSED_FRAMES = 1000;
 
 public:
+    Camera(const ReplayBuf &other) = delete;
+    Camera &operator=(const ReplayBuf &other) = delete;
     Camera(const std::string &capture_device);
     ~Camera();
 
     void update();
 
 private:
-    void reset()
-    {
-        m_cap.release();
-        m_cap = cv::VideoCapture(m_cap_id);
-
-        m_motion_module.init(m_cap);
-    }
-
+    void reset();
     void update_steady_fps(std::chrono::steady_clock::time_point start, std::chrono::steady_clock::time_point end);
 
 private:
