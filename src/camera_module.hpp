@@ -2,28 +2,36 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "detectors/detector.hpp"
 #include "replay.hpp"
+#include "detector.hpp"
 
 class CameraModule
 {
 public:
-    CameraModule(const cv::VideoCapture &cap, Detector *detector) : m_replay(cap.get(cv::CAP_PROP_FRAME_WIDTH), cap.get(cv::CAP_PROP_FRAME_HEIGHT))
+    CameraModule(Detector *detector) : m_detector(detector) {}
+
+    void init(const cv::VideoCapture &capture)
     {
-        m_detector = detector;
+        if (!capture.isOpened())
+        {
+            return;
+        }
+
+        m_replay.setSize(static_cast<unsigned int>(capture.get(cv::CAP_PROP_FRAME_WIDTH)),
+                         static_cast<unsigned int>(capture.get(cv::CAP_PROP_FRAME_HEIGHT)));
     }
 
-    void update(const cv::Mat &frame, float steady_fps)
+    Detector::Result update(const cv::Mat &frame, float steady_fps)
     {
         m_replay.setFramerate(steady_fps);
 
-        m_detector->poll(frame, steady_fps);
+        Detector::Result result = m_detector->check(frame);
 
-        if (m_detector->isDetecting())
+        if (result.detected)
         {
             m_detection_timer = 100.0f;
             m_detection_active = true;
-            m_replay.setEnabled("replays");
+            m_replay.setEnabled();
         }
 
         m_replay.update(frame);
@@ -48,16 +56,8 @@ public:
         {
             m_detection_active = false;
         }
-    }
 
-    const Detector *getDetector() const { return m_detector; }
-
-    ~CameraModule()
-    {
-        if (m_detector)
-        {
-            delete m_detector;
-        }
+        return result;
     }
 
 private:

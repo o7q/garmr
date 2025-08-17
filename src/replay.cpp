@@ -27,14 +27,14 @@ void ReplayBuf::update(const cv::Mat &frame)
     }
 }
 
-void ReplayBuf::setEnabled(const std::string &path)
+void ReplayBuf::setEnabled()
 {
     if (m_write_active)
     {
         return;
     }
 
-    m_video_writer.open(path + "/motion_" + getFormattedTime() + ".mp4", cv::VideoWriter::fourcc('a', 'v', 'c', '1'), m_framerate, m_frame_size);
+    m_video_writer.open(m_write_directory + "/motion_" + getFormattedTime() + ".mp4", cv::VideoWriter::fourcc('a', 'v', 'c', '1'), m_framerate, m_frame_size);
 
     if (!m_video_writer.isOpened())
     {

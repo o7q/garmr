@@ -5,9 +5,9 @@ MotionDetector::MotionDetector()
     m_bgSubtractor = cv::createBackgroundSubtractorMOG2(500, 16.0, false);
 }
 
-void MotionDetector::poll(const cv::Mat &frame, float steady_fps)
+Detector::Result MotionDetector::check(const cv::Mat &frame)
 {
-    m_frame_marked = frame.clone();
+    Result motionResult{frame.clone(), false};
 
     m_bgSubtractor->apply(frame, m_fgMask);
 
@@ -17,7 +17,7 @@ void MotionDetector::poll(const cv::Mat &frame, float steady_fps)
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(m_fgMask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-    m_detection = false;
+    motionResult.detected = false;
 
     for (const auto &contour : contours)
     {
@@ -25,9 +25,11 @@ void MotionDetector::poll(const cv::Mat &frame, float steady_fps)
         if (contourArea > 1000)
         {
             cv::Rect boundRect = cv::boundingRect(contour);
-            cv::rectangle(m_frame_marked, boundRect, cv::Scalar(255.0, 255.0, 0), 1);
+            cv::rectangle(motionResult.marked_frame, boundRect, cv::Scalar(255.0, 255.0, 0), 1);
 
-            m_detection = true;
+            motionResult.detected = true;
         }
     }
+
+    return motionResult;
 }

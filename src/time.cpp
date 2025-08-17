@@ -5,8 +5,10 @@
 #include <ctime>
 #include <sstream>
 
-std::string getFormattedTime(std::time_t t)
+std::string getFormattedTime()
 {
+    std::time_t t = std::time(nullptr);
+
     std::tm tm{};
 #ifdef _WIN32
     localtime_s(&tm, &t); // Windows

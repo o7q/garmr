@@ -1,38 +1,15 @@
 #include "camera.hpp"
 
-#include "detectors/motion.hpp"
 #include "camera_module.hpp"
 
-Camera::Camera(std::string capture_device)
+Camera::Camera(const std::string &capture_device) : m_motion_module(&m_motion_detector)
 {
-    m_cap = cv::VideoCapture(capture_device);
-
-    m_modules.push_back(new CameraModule(m_cap, new MotionDetector()));
-
-    m_fps_history = new float[m_fps_smooth_iterations];
-
-    for (int i = 0; i < m_fps_smooth_iterations; ++i)
-    {
-        m_fps_history[i] = 1.0f;
-    }
+    m_cap_id = capture_device;
+    reset();
 }
 
 Camera::~Camera()
 {
-    if (m_fps_history)
-    {
-        delete[] m_fps_history;
-    }
-
-    for (CameraModule *module : m_modules)
-    {
-        if (module)
-        {
-            delete module;
-        }
-    }
-    m_modules.clear();
-
     m_cap.release();
 }
 
@@ -42,18 +19,22 @@ void Camera::update()
 
     m_cap >> m_frame;
 
+    if (m_missed_frames >= MAX_MISSED_FRAMES)
+    {
+        reset();
+        std::cout << "Attempting Camera Reset" << std::endl;
+
+        m_missed_frames = 0;
+    }
+
     if (m_frame.empty())
     {
+        ++m_missed_frames;
         return;
     }
 
     cv::imshow("Camera", m_frame);
-
-    for (CameraModule *module : m_modules)
-    {
-        module->update(m_frame, m_steady_fps);
-        cv::imshow("Camera Motion", module->getDetector()->getMarkedFrame());
-    }
+    cv::imshow("Motion Camera", m_motion_module.update(m_frame, m_steady_fps).marked_frame);
 
     std::chrono::steady_clock::time_point clock_end = std::chrono::steady_clock::now();
     update_steady_fps(clock_start, clock_end);
@@ -67,12 +48,12 @@ void Camera::update_steady_fps(std::chrono::steady_clock::time_point start, std:
 
     float fps_sum = 0.0f;
 
-    for (int i = 0; i < m_fps_smooth_iterations; ++i)
+    for (int i = 0; i < FPS_SMOOTH_ITERATIONS; ++i)
     {
         fps_sum += m_fps_history[i];
     }
 
-    m_fps_history_index = (m_fps_history_index + 1) % m_fps_smooth_iterations;
+    m_fps_history_index = (m_fps_history_index + 1) % FPS_SMOOTH_ITERATIONS;
 
-    m_steady_fps = fps_sum / m_fps_smooth_iterations;
+    m_steady_fps = fps_sum / FPS_SMOOTH_ITERATIONS;
 }

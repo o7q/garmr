@@ -9,6 +9,6 @@ target_compile_options(${PROJECT_NAME} PRIVATE -O0 -Wall)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
 
-find_package(OpenCV REQUIRED PATHS ./opencv-build NO_DEFAULT_PATH)
-include_directories(${OpenCV_INCLUDE_DIRS})
+find_package(OpenCV REQUIRED PATHS "./3rd_party/opencv" NO_DEFAULT_PATH)
+include_directories(${OpenCV_INCLUDE_DIRS} "./3rd_party/miniaudio/include")
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})

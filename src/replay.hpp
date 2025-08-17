@@ -8,13 +8,19 @@ class ReplayBuf
 public:
     ReplayBuf(const ReplayBuf &other) = delete;
     ReplayBuf &operator=(const ReplayBuf &other) = delete;
-    ReplayBuf(int width, int height)
+    ReplayBuf() {}
+    ~ReplayBuf() { disable(); }
+
+    void setWriteDirectory(const std::string &directory)
+    {
+        m_write_directory = directory;
+    }
+
+    void setSize(int width, int height)
     {
         m_frame_size.width = width;
         m_frame_size.height = height;
     }
-
-    ~ReplayBuf() { disable(); }
 
     void setFramerate(float framerate)
     {
@@ -31,12 +37,14 @@ public:
 
     void update(const cv::Mat &frame);
 
-    void setEnabled(const std::string &path);
+    void setEnabled();
     void disable();
 
 private:
     cv::VideoWriter m_video_writer;
     std::deque<cv::Mat> m_start_padding_buffer;
+
+    std::string m_write_directory = "./replays";
 
     bool m_write_active = false;
     bool m_do_padding_write = false;
