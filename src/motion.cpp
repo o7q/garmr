@@ -4,7 +4,6 @@ MotionDetector::MotionDetector()
 {
     m_bgSubtractor = cv::createBackgroundSubtractorMOG2(500, 16.0, false);
     m_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
-
     m_contours_prealloc.reserve(100);
 }
 
