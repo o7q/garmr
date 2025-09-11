@@ -26,7 +26,7 @@ Detector::Result CameraModule::update(const cv::Mat &frame, float steady_fps)
 
     if (result.detected)
     {
-        m_detection_timer = 100.0f;
+        m_detection_timer = 500.0f;
         m_detection_active = true;
         m_replay.enable();
     }
@@ -39,7 +39,6 @@ Detector::Result CameraModule::update(const cv::Mat &frame, float steady_fps)
     }
     else
     {
-        std::cout << m_detection_timer << std::endl;
         m_detection_timer /= 1.1f;
     }
 
